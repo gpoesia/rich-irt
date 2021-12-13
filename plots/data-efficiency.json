@@ -1,0 +1,83 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {
+    "values": [
+{ "seed": 1, "model": "Amortized VIBO", "missing_perc": 0.1, "accuracy": 0.8460681114551084 },
+{ "seed": 1, "model": "VIBO", "missing_perc": 0.1, "accuracy": 0.5556037151702786 },
+{ "seed": 2, "model": "Amortized VIBO", "missing_perc": 0.1, "accuracy": 0.8457275541795666 },
+{ "seed": 2, "model": "VIBO", "missing_perc": 0.1, "accuracy": 0.4925386996904025 },
+{ "seed": 3, "model": "Amortized VIBO", "missing_perc": 0.1, "accuracy": 0.8464705882352941 },
+{ "seed": 3, "model": "VIBO", "missing_perc": 0.1, "accuracy": 0.42934984520123837 },
+{ "seed": 4, "model": "Amortized VIBO", "missing_perc": 0.1, "accuracy": 0.8456965944272445 },
+{ "seed": 4, "model": "VIBO", "missing_perc": 0.1, "accuracy": 0.4919814241486068 },
+{ "seed": 5, "model": "Amortized VIBO", "missing_perc": 0.1, "accuracy": 0.8457275541795666 },
+{ "seed": 5, "model": "VIBO", "missing_perc": 0.1, "accuracy": 0.44544891640866874 },
+{ "seed": 1, "model": "Amortized VIBO", "missing_perc": 0.5, "accuracy": 0.874717430831982 },
+{ "seed": 1, "model": "VIBO", "missing_perc": 0.5, "accuracy": 0.5176912870411322 },
+{ "seed": 2, "model": "Amortized VIBO", "missing_perc": 0.5, "accuracy": 0.874717430831982 },
+{ "seed": 2, "model": "VIBO", "missing_perc": 0.5, "accuracy": 0.5229925303454716 },
+{ "seed": 3, "model": "Amortized VIBO", "missing_perc": 0.5, "accuracy": 0.874717430831982 },
+{ "seed": 3, "model": "VIBO", "missing_perc": 0.5, "accuracy": 0.5009828492800629 },
+{ "seed": 4, "model": "Amortized VIBO", "missing_perc": 0.5, "accuracy": 0.874717430831982 },
+{ "seed": 4, "model": "VIBO", "missing_perc": 0.5, "accuracy": 0.4966890264877881 },
+{ "seed": 5, "model": "Amortized VIBO", "missing_perc": 0.5, "accuracy": 0.874717430831982 },
+{ "seed": 5, "model": "VIBO", "missing_perc": 0.5, "accuracy": 0.4620435893655708 },
+{ "seed": 1, "model": "Amortized VIBO", "missing_perc": 0.9, "accuracy": 0.862516781281679 },
+{ "seed": 1, "model": "VIBO", "missing_perc": 0.9, "accuracy": 0.4862804460396175 },
+{ "seed": 2, "model": "Amortized VIBO", "missing_perc": 0.9, "accuracy": 0.8531603605578235 },
+{ "seed": 2, "model": "VIBO", "missing_perc": 0.9, "accuracy": 0.5034007781035097 },
+{ "seed": 3, "model": "Amortized VIBO", "missing_perc": 0.9, "accuracy": 0.8598831474834927 },
+{ "seed": 3, "model": "VIBO", "missing_perc": 0.9, "accuracy": 0.4994006685114661 },
+{ "seed": 4, "model": "Amortized VIBO", "missing_perc": 0.9, "accuracy": 0.8663079810405765 },
+{ "seed": 4, "model": "VIBO", "missing_perc": 0.9, "accuracy": 0.4854311077015809 },
+{ "seed": 5, "model": "Amortized VIBO", "missing_perc": 0.9, "accuracy": 0.8450300008219404 },
+{ "seed": 5, "model": "VIBO", "missing_perc": 0.9, "accuracy": 0.4728314474369161 },
+{ "seed": 1, "model": "VIBO", "missing_perc": 0.95, "accuracy": 0.48644053525396064 },
+{ "seed": 2, "model": "Amortized VIBO", "missing_perc": 0.95, "accuracy": 0.7645763436402969 },
+{ "seed": 2, "model": "VIBO", "missing_perc": 0.95, "accuracy": 0.5160045079472 },
+{ "seed": 3, "model": "Amortized VIBO", "missing_perc": 0.95, "accuracy": 0.7904970400404161 },
+{ "seed": 3, "model": "VIBO", "missing_perc": 0.95, "accuracy": 0.4943780198712385 },
+{ "seed": 4, "model": "Amortized VIBO", "missing_perc": 0.95, "accuracy": 0.7609654520253377 },
+{ "seed": 4, "model": "VIBO", "missing_perc": 0.95, "accuracy": 0.47148205241136315 },
+{ "seed": 5, "model": "Amortized VIBO", "missing_perc": 0.95, "accuracy": 0.6795665634674922 },
+{ "seed": 5, "model": "VIBO", "missing_perc": 0.95, "accuracy": 0.46670531238260554 },
+{ "seed": 1, "model": "Amortized VIBO", "missing_perc": 0.99, "accuracy": 0.3988896763524687 },
+{ "seed": 1, "model": "VIBO", "missing_perc": 0.99, "accuracy": 0.48514491402141074 },
+{ "seed": 2, "model": "Amortized VIBO", "missing_perc": 0.99, "accuracy": 0.7878075770574559 },
+{ "seed": 2, "model": "VIBO", "missing_perc": 0.99, "accuracy": 0.51362726447586 },
+{ "seed": 3, "model": "Amortized VIBO", "missing_perc": 0.99, "accuracy": 0.7817523965832369 },
+{ "seed": 3, "model": "VIBO", "missing_perc": 0.99, "accuracy": 0.505321595981449 },
+{ "seed": 4, "model": "Amortized VIBO", "missing_perc": 0.99, "accuracy": 0.5171273328608552 },
+{ "seed": 4, "model": "VIBO", "missing_perc": 0.99, "accuracy": 0.48794559041118035 },
+{ "seed": 5, "model": "Amortized VIBO", "missing_perc": 0.99, "accuracy": 0.5691683141233665 },
+{ "seed": 5, "model": "VIBO", "missing_perc": 0.99, "accuracy": 0.4635849901152598 }
+    ]
+  },
+  "title": "ROAR",
+  "layer": [
+  {
+    "mark": { "type": "line" },
+    "encoding": {
+      "x": {"type": "quantitative", "field": "missing_perc" },
+      "y": {"type": "quantitative", "field": "accuracy", "aggregate": "mean", "scale": { "domain": [0.3, 1.0]} },
+      "color": { "field": "model", "legend": {"title": "Model"}}
+    }
+  },
+  {
+    "mark": { "type": "point" },
+    "encoding": {
+      "x": {"type": "quantitative", "field": "missing_perc" },
+      "y": {"type": "quantitative", "field": "accuracy", "aggregate": "mean", "scale": { "domain": [0.3, 1.0]} },
+      "color": { "field": "model", "legend": {"title": "Model"}}
+    }
+  },
+  {
+    "mark": { "type": "errorband", "extent": "ci" },
+    "encoding": {
+      "x": {"type": "quantitative", "field": "missing_perc", "axis": {"title": "Held-out Items Fraction"}},
+      "y": {"type": "quantitative", "field": "accuracy", "axis": {"title": "Accuracy", "minExtent": 0.3}},
+      "color": { "field": "model", "legend": {"title": "Model"}}
+    }
+  }
+  ]
+}

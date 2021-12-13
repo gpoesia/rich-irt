@@ -1,0 +1,3 @@
+[submodule "variational-item-response-theory-public"]
+	path = variational-item-response-theory-public
+	url = https://github.com/gpoesia/variational-item-response-theory-public
