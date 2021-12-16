@@ -41,13 +41,10 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
         steps_student_problem = [r['steps'] for r in all_rows if r['problem'] == problem and r['student'] == student]
         errors_student_problem = [r['errors'] for r in all_rows if r['problem'] == problem and r['student'] == student]
         attempt_idx = [i for i, x in enumerate(errors_student_problem) if x != 0]
-        print(attempt_idx)
         if len(attempt_idx) == 0:
             attempt_idx = 0
         else:
             attempt_idx = attempt_idx[0]
-
-
 
         rows.append(
             {
@@ -59,13 +56,9 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
             }
         )
 
-    #for r in rows:
-    #    print(r['student'], r['problem'], r['correct'])
-
     # Syntactically normalize solutions using the Racket parser/formatter.
     if True:
         problems = [r['problem'] for r in rows]
-        # print('Problems:', problems)
         problems = evaluation.normalize_solutions([problems])[0]
         for r, p in zip(rows, problems):
             r['problem'] = re.sub('[a-z]', 'x', p)
@@ -77,6 +70,7 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
         steps = evaluation.normalize_solutions(steps)
         for r, s in zip(rows, steps):
             r['steps'] = []
+            print(s)
             for step in s:
                 step = re.sub('[a-z]', 'x', step)
                 if normalize:
