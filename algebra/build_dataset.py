@@ -41,6 +41,7 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
         steps_student_problem = [r['steps'] for r in all_rows if r['problem'] == problem and r['student'] == student]
         errors_student_problem = [r['errors'] for r in all_rows if r['problem'] == problem and r['student'] == student]
         attempt_idx = [i for i, x in enumerate(errors_student_problem) if x != 0]
+        print(attempt_idx)
         if attempt_idx is []:
             attempt_idx = 0
         else:
