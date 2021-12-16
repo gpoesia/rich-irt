@@ -59,7 +59,6 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
     # Syntactically normalize solutions using the Racket parser/formatter.
     if True:
         problems = [r['problem'] for r in rows]
-        print(problems)
         problems = evaluation.normalize_solutions([problems])[0]
         for r, p in zip(rows, problems):
             r['problem'] = re.sub('[a-z]', 'x', p)
