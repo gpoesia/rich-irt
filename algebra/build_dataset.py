@@ -75,7 +75,7 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
             r['steps'] = []
             for step in s:
                 step = re.sub('[a-z]', 'x', step)
-                if normalize
+                if normalize:
                     step = re.sub('[0-9]+', 'C', step)
                 r['steps'] += step
 
