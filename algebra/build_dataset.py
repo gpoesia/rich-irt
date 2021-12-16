@@ -4,13 +4,31 @@ import argparse
 import csv
 import json
 
-import sys
-# Link to the socratic-tutor repository so that we can import `evaluation`.
-sys.path.append('../../socratic-tutor')
-import evaluation
+import subprocess
 
 import re
 
+
+def normalize_solutions(solutions: list[list[str]]) -> list[list[str]]:
+    'Uses the Racket parser to syntactically normalize solutions in the equations domain.'
+    all_steps = []
+
+    for s in solutions:
+        all_steps.extend(s)
+
+    with open('input.txt', 'w') as f:
+        for l in all_steps:
+            f.write(l)
+            f.write('\n')
+
+    sp = subprocess.run(["racket", "-tm", "canonicalize-terms.rkt"], capture_output=True)
+    steps = list(filter(None, sp.stdout.decode("utf8").split("\n")))
+
+    new_solutions = []
+    for s in solutions:
+        new_solutions.append([steps.pop(0) for _ in range(len(s))])
+
+    return new_solutions
 
 def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, normalize=True):
     with open(data) as f:
@@ -59,7 +77,7 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
     # Syntactically normalize solutions using the Racket parser/formatter.
     if True:
         problems = [r['problem'] for r in rows]
-        problems = evaluation.normalize_solutions([problems])[0]
+        problems = normalize_solutions([problems])[0]
         for r, p in zip(rows, problems):
             r['problem'] = re.sub('[a-z]', 'x', p)
 
@@ -67,7 +85,7 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
                 r['problem'] = re.sub('[0-9]+', 'C', r['problem'])
 
         steps = [r['steps'] for r in rows]
-        steps = evaluation.normalize_solutions(steps)
+        steps = normalize_solutions(steps)
         for r, s in zip(rows, steps):
             r['steps'] = []
             for step in s:
