@@ -40,8 +40,11 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
         # store steps for the first incorrect attempt or the first attempt if all attempts are correct
         steps_student_problem = [r['steps'] for r in all_rows if r['problem'] == problem and r['student'] == student]
         errors_student_problem = [r['errors'] for r in all_rows if r['problem'] == problem and r['student'] == student]
-        attmpt_idx = [i for i, x in enumerate(errors_student_problem) if x != 0]
-        attmpt_idx = 0 if attmpt_idx is [] else attmpt_idx[0]
+        attempt_idx = [i for i, x in enumerate(errors_student_problem) if x != 0]
+        if attempt_idx is []:
+            attempt_idx = 0
+        else:
+            attempt_idx = attempt_idx[0]
 
 
 
@@ -49,7 +52,7 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
             {
                 'problem': problem,
                 'student': student,
-                'steps': steps_student_problem[attmpt_idx],
+                'steps': steps_student_problem[attempt_idx],
                 'correct': sum(errors_student_problem) == 0,
                 'timestamp': min(r['timestamp'] for r in all_rows if r['problem'] == problem and r['student'] == student),
             }
