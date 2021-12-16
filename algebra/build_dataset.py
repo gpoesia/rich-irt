@@ -25,6 +25,8 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
     all_rows = [
         { 'problem': r['problemTrace'].split(';')[0].strip(),
           'student': r['user_id'],
+          'steps': [p.strip() for p in r['problemTrace'].split(';')[1:]],
+          'answer': r['gaveAnswer'],
           'correct': r['correct'] == '1',
           'errors': 0 if r['invalidSteps'] == '[]' else (1 + r['invalidSteps'].count(',')),
           'timestamp': r['startTime'],
@@ -35,11 +37,20 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
     rows = []
 
     for problem, student in set((r['problem'], r['student']) for r in all_rows):
+        # store steps for the first incorrect attempt or the first attempt if all attempts are correct
+        steps_student_problem = [r['steps'] for r in all_rows if r['problem'] == problem and r['student'] == student]
+        errors_student_problem = [r['errors'] for r in all_rows if r['problem'] == problem and r['student'] == student]
+        attmpt_idx = [i for i, x in enumerate(errors_student_problem) if x != 0]
+        attmpt_idx = 0 if attmpt_idx is [] else attmpt_idx[0]
+
+
+
         rows.append(
             {
                 'problem': problem,
                 'student': student,
-                'correct': sum(r['errors'] for r in all_rows if r['problem'] == problem and r['student'] == student) == 0,
+                'steps': steps_student_problem[attmpt_idx],
+                'correct': sum(errors_student_problem) == 0,
                 'timestamp': min(r['timestamp'] for r in all_rows if r['problem'] == problem and r['student'] == student),
             }
         )
@@ -57,6 +68,16 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
 
             if normalize:
                 r['problem'] = re.sub('[0-9]+', 'C', r['problem'])
+
+        steps = [r['steps'] for r in rows]
+        steps = evaluation.normalize_solutions(steps)
+        for r, s in zip(rows, steps):
+            r['steps'] = []
+            for step in s:
+                step = re.sub('[a-z]', 'x', step)
+                if normalize
+                    step = re.sub('[0-9]+', 'C', step)
+                r['steps'] += step
 
     print(len(rows), 'data points.')
     print(len(set(r['student'] for r in rows)), 'students.')
@@ -77,6 +98,7 @@ if __name__ == '__main__':
     parser.add_argument('--normalize-consts', action='store_true', help='Whether to replace constants by a placeholder, grouping equations having the same structure.')
 
     opt = parser.parse_args()
+    print(opt)
     make_irt_dataset(opt.data,
                      opt.output,
                      drop_corrected=opt.drop_corrected,
