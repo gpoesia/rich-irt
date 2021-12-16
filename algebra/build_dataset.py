@@ -22,6 +22,7 @@ def normalize_solutions(solutions: list[list[str]]) -> list[list[str]]:
             f.write('\n')
 
     sp = subprocess.run(["racket", "-tm", "canonicalize-terms.rkt"], capture_output=True)
+    print(sp)
     steps = list(filter(None, sp.stdout.decode("utf8").split("\n")))
 
     new_solutions = []
