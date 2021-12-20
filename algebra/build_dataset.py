@@ -92,8 +92,10 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
                 try:
                     normalized_step = normalize_solutions([psteps])[0]
                     normalized_steps += [normalized_step]
-                except:
-                    print(psteps)
+                except IndexError as e:
+                    sp = subprocess.run(["racket", "-tm", "canonicalize-terms.rkt"], capture_output=True)
+                    with open('error.txt', 'a') as f:
+                        f.write(sp)
                     normalized_steps += []
                     pass
             else:
