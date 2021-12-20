@@ -9,7 +9,7 @@ import subprocess
 import re
 
 
-def normalize_solutions(solutions: list[list[str]]) -> list[list[str]]:
+def normalize_solutions(solutions):
     'Uses the Racket parser to syntactically normalize solutions in the equations domain.'
     all_steps = []
 
