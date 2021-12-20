@@ -85,8 +85,14 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
             if normalize:
                 r['problem'] = re.sub('[0-9]+', 'C', r['problem'])
 
-        steps = [r['steps'][-1] for r in rows]
-        steps = normalize_solutions([steps])[0]
+        steps = [r['steps'] for r in rows]
+        normalized_steps = []
+        for psteps in steps:
+            if len(psteps) > 0:
+                normalized_step = normalize_solutions([psteps])[0]
+                normalized_steps += [normalized_step]
+            else:
+                normalized_steps += []
         # for r, s in zip(rows, steps):
         #     r['steps'] = []
         #     for step in s:
