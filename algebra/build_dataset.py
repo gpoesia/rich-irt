@@ -91,6 +91,7 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
             if len(psteps) > 0:
                 print(psteps)
                 normalized_step = normalize_solutions([psteps])[0]
+                print(normalized_step)
                 normalized_steps += [normalized_step]
             else:
                 normalized_steps += []
