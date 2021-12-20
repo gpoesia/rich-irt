@@ -96,7 +96,7 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
                     sp = subprocess.run(["racket", "-tm", "canonicalize-terms.rkt"], capture_output=True)
                     with open('error.txt', 'a') as f:
                         f.write(f'{psteps}\n')
-                        f.write(sp)
+                        f.write(str(sp))
                     normalized_steps += []
                     pass
             else:
