@@ -44,7 +44,7 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
     all_rows = [
         { 'problem': r['problemTrace'].split(';')[0].strip(),
           'student': r['user_id'],
-          'steps': [p.strip() for p in r['problemTrace'].split(';')[1:]],
+          'steps': [p.strip() for p in r['problemTrace'].split(';')[1:] if p.strip() != ''],
           'answer': r['gaveAnswer'],
           'correct': r['correct'] == '1',
           'errors': 0 if r['invalidSteps'] == '[]' else (1 + r['invalidSteps'].count(',')),
