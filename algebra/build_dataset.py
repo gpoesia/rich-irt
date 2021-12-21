@@ -91,6 +91,7 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
         steps = [r['steps'] for r in rows]
         normalized_steps = []
         for i, psteps in enumerate(steps):
+            print(f"{i+1}/{len(steps)}")
             if len(psteps) > 0:
                 try:
                     normalized_step = normalize_solutions([psteps])[0]
