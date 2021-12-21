@@ -42,7 +42,8 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
         rows = [r for r in rows if r['interfaceMode'] != '4']
 
     all_rows = [
-        { 'problem': r['problemTrace'].split(';')[0].strip(),
+        { 'id': r['id'],
+          'problem': r['problemTrace'].split(';')[0].strip(),
           'student': r['user_id'],
           'steps': [p.strip() for p in r['problemTrace'].split(';')[1:] if p.strip() != ''],
           'answer': r['gaveAnswer'],
@@ -59,6 +60,7 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
         # store steps for the first incorrect attempt or the first attempt if all attempts are correct
         steps_student_problem = [r['steps'] for r in all_rows if r['problem'] == problem and r['student'] == student]
         errors_student_problem = [r['errors'] for r in all_rows if r['problem'] == problem and r['student'] == student]
+        ids = [r['id'] for r in all_rows if r['problem'] == problem and r['student'] == student]
         attempt_idx = [i for i, x in enumerate(errors_student_problem) if x != 0]
         if len(attempt_idx) == 0:
             attempt_idx = 0
@@ -67,6 +69,7 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
 
         rows.append(
             {
+                'id': ids[attempt_idx],
                 'problem': problem,
                 'student': student,
                 'steps': steps_student_problem[attempt_idx],
@@ -87,27 +90,25 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
 
         steps = [r['steps'] for r in rows]
         normalized_steps = []
-        for psteps in steps:
+        for i, psteps in enumerate(steps):
             if len(psteps) > 0:
                 try:
                     normalized_step = normalize_solutions([psteps])[0]
                     normalized_steps += [normalized_step]
                 except IndexError as e:
-                    sp = subprocess.run(["racket", "-tm", "canonicalize-terms.rkt"], capture_output=True)
-                    with open('error.txt', 'a') as f:
-                        f.write(f'{psteps}\n')
-                        f.write(str(sp))
+                    with open('filter.txt', 'a') as f:
+                        f.write(f"{rows[i]['id']} {psteps}\n")
                     normalized_steps += []
                     pass
             else:
                 normalized_steps += []
-        # for r, s in zip(rows, steps):
-        #     r['steps'] = []
-        #     for step in s:
-        #         step = re.sub('[a-z]', 'x', step)
-        #         if normalize:
-        #             step = re.sub('[0-9]+', 'C', step)
-        #         r['steps'] += step
+        for r, s in zip(rows, normalized_steps):
+            r['steps'] = []
+            for step in s:
+                step = re.sub('[a-z]', 'x', step)
+                if normalize:
+                    step = re.sub('[0-9]+', 'C', step)
+                r['steps'].append(step)
 
     print(len(rows), 'data points.')
     print(len(set(r['student'] for r in rows)), 'students.')
