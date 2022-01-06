@@ -89,7 +89,7 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
                 r['problem'] = re.sub('[0-9]+', 'C', r['problem'])
 
         steps = [r['steps'] for r in rows]
-        normalized_steps = []
+        # normalized_steps = []
         # for i, psteps in enumerate(steps):
         #     print(f"{i+1}/{len(steps)}")
         #     if len(psteps) > 0:
