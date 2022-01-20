@@ -7,7 +7,9 @@ import pytorch_lightning as pl
 from transformers import BertForMaskedLM, BertModel, BertConfig
 import random
 import wandb
+import csv
 from pytorch_lightning.loggers import WandbLogger
+from tqdm import tqdm
 
 
 BOW = 1
@@ -63,18 +65,31 @@ def transform_swap_any(s, n_swaps):
 
     return s
 
-def make_nonwords(words):
+def make_nonwords(words, k=10):
     nonwords = []
 
-    for i in range(len(words)):
-        w = random.choice(words)
+    print("Generating pseudowords...")
 
-        w = transform_delete(w, random.randint(0, 2))
-        w = transform_insert(w, random.randint(0, 2))
-        w = transform_swap_adj(w, random.randint(0, 2))
-        w = transform_swap_any(w, random.randint(0, 2))
+    for i in tqdm(range(len(words))):
+        for _ in range(k):
+            w = random.choice(words)
 
-        nonwords.append(w)
+            for i in range(random.randint(1, 8)):
+                w = random.choice([
+                    lambda w: transform_delete(w, random.randint(0, 2)),
+                    lambda w: transform_insert(w, random.randint(0, 2)),
+                    lambda w: transform_swap_adj(w, random.randint(0, 2)),
+                    lambda w: transform_swap_any(w, random.randint(0, 2)),
+                    # Add a suffix from another word.
+                    lambda w: random.choice(words)[0:random.randint(0, 5)] + w,
+                    # Add a prefix from another word.
+                    lambda w: w + random.choice(words)[-random.randint(0, 5):],
+                    # Take a prefix.
+                    lambda w: w[:random.randint(1, len(w))],
+                    # Take a suffix.
+                    lambda w: w[random.randint(0, len(w) - 1):],
+                ])(w)
+            nonwords.append(w)
 
     nonwords = list(set(nonwords) - set(words))
     return nonwords
@@ -188,18 +203,24 @@ class CharBERTClassifier(pl.LightningModule):
         y_hat, _ = self.forward(enc)
         criterion = torch.nn.BCEWithLogitsLoss()
 
-        loss = criterion(y_hat, torch.tensor(y).type_as(y_hat))
+        loss = criterion(y_hat, torch.tensor(y).type_as(y_hat)).mean()
 
         if log_loss is not None:
-            self.log(log_loss, loss)
+            self.log(log_loss, loss, batch_size=len(batch_xy))
 
         return loss
 
     def validation_step(self, batch, batch_idx):
-        return self.training_step(batch, batch_idx, log_loss='validation_loss')
+        batch, y = batch
+        enc = encode_batch(batch).to(self.device)
+        y_hat, _ = self.forward(enc)
+
+        accuracy = (y_hat.sigmoid().round() == 
+                    torch.tensor(y).type_as(y_hat)).float().mean()
+        self.log('validation_accuracy', accuracy)
 
     def test_step(self, batch, batch_idx):
-        return self.training_step(batch, batch_idx, log_loss='test_loss')
+        return self.validation_step(batch, batch_idx)
 
     def configure_optimizers(self):
         return torch.optim.AdamW(self.parameters(), lr=self.lr)
@@ -208,26 +229,30 @@ class CharBERTClassifier(pl.LightningModule):
         with open('/usr/share/dict/words') as f:
             words = list(f)
 
-        words = [w.lower().strip() for w in words]
-        nonwords = make_nonwords(words)
+        K = 20
+        words = 20 * [w.lower().strip() for w in words]
+        nonwords = make_nonwords(words, K)
 
         dataset = [(w, 1) for w in words] + [(w, 0) for w in nonwords]
         random.shuffle(dataset)
 
-        train_dataloader = torch.utils.data.DataLoader(dataset[:-10000], shuffle=True, batch_size=128)
-        val_dataloader = torch.utils.data.DataLoader(dataset[-10000:], batch_size=64)
+        with open('lookup_real_pseudo.csv') as f:
+            roar_items = [(r['word'], int(r['realpesudo'] == 'real')) for r in csv.DictReader(f)]
+
+        train_dataloader = torch.utils.data.DataLoader(dataset, shuffle=True, batch_size=128)
+        val_dataloader = torch.utils.data.DataLoader(roar_items, batch_size=64)
 
         wandb_logger = WandbLogger('rich-irt')
 
-        trainer = pl.Trainer(gpus=[5], max_epochs=10, logger=wandb_logger)
+        trainer = pl.Trainer(gpus=[8], max_epochs=20, logger=wandb_logger)
 
         trainer.fit(self, train_dataloader, val_dataloader)
 
-        torch.save(self, 'roar_bert_supervised.pt')
+        torch.save(self, 'roar_bert_supervised_20.pt')
 
 
 if __name__ == '__main__':
     pass
     #bert = CharBERT()
-    # bert = CharBERTClassifier()
-    #bert.fit()
+    bert = CharBERTClassifier()
+    bert.fit()
