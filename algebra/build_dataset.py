@@ -72,7 +72,6 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
         attempt_idx = 0
         # answer is correct even if step is incorrect feedback was given
         correct = correct_student_problem[attempt_idx]
-        sum_errors = sum(errors_student_problem[attempt_idx]) == 0
         rows.append(
             {
                 'id': ids[attempt_idx],
