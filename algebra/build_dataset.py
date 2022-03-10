@@ -46,9 +46,6 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
     if drop_freeform:
         rows = [r for r in rows if r['interfaceMode'] != '4']
     
-    # drop rows where final submit is 0
-    rows = [r for r in rows if r['finalSubmit'] == '1']
-
     all_rows = [
         { 'id': r['id'],
           'problem': r['problemTrace'].split(';')[0].strip(),
@@ -67,23 +64,17 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
     for problem, student in set((r['problem'], r['student']) for r in all_rows):
         # store steps for the first incorrect attempt or the first attempt if all attempts are correct
         steps_student_problem = [r['steps'] for r in all_rows if r['problem'] == problem and r['student'] == student]
-        assert len(steps_student_problem) == 1
         errors_student_problem = [r['errors'] for r in all_rows if r['problem'] == problem and r['student'] == student]
         ids = [r['id'] for r in all_rows if r['problem'] == problem and r['student'] == student]
         correct_student_problem = [r['correct'] for r in all_rows if r['problem'] == problem and r['student'] == student]
 
-        # attempt_idx = [i for i, x in enumerate(errors_student_problem) if x != 0]
-        # if len(attempt_idx) == 0:
-        attempt_idx = 0
-        # answer is correct even if step is incorrect feedback was given
-        correct = correct_student_problem[attempt_idx]
         rows.append(
             {
                 'id': ids[attempt_idx],
                 'problem': problem,
                 'student': student,
                 'steps': steps_student_problem[attempt_idx],
-                'correct': correct,
+                'correct': sum(r['errors'] for r in all_rows if r['problem'] == problem and r['student'] == student) == 0,
                 'timestamp': max(r['timestamp'] for r in all_rows if r['problem'] == problem and r['student'] == student),
             }
         )
