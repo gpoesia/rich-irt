@@ -94,28 +94,31 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
                 r['problem'] = re.sub('[0-9]+', 'C', r['problem'])
 
         steps = [r['steps'] for r in rows]
-        # normalized_steps = []
-        # for i, psteps in enumerate(steps):
-        #     print(f"{i+1}/{len(steps)}")
-        #     if len(psteps) > 0:
-        #         try:
-        #             normalized_step = normalize_solutions([psteps])[0]
-        #             normalized_steps += [normalized_step]
-        #         except IndexError as e:
-        #             with open('filter.txt', 'a') as f:
-        #                 f.write(f"{rows[i]['id']} {psteps}\n")
-        #             normalized_steps += []
-        #             pass
-        #     else:
-        #         normalized_steps += []
-        normalized_steps = normalize_solutions(steps)
-        for r, s in zip(rows, normalized_steps):
-            r['steps'] = []
-            for step in s:
-                step = re.sub('[a-z]', 'x', step)
-                if normalize:
-                    step = re.sub('[0-9]+', 'C', step)
-                r['steps'].append(step)
+################################################################################
+        normalized_steps = []
+        for i, psteps in enumerate(steps):
+            print(f"{i+1}/{len(steps)}")
+            if len(psteps) > 0:
+                try:
+                    normalized_step = normalize_solutions([psteps])[0]
+                    normalized_steps += [normalized_step]
+                except IndexError as e:
+                    with open('filter.txt', 'a') as f:
+                        f.write(f"{rows[i]['id']} {psteps}\n")
+                    normalized_steps += []
+                    pass
+            else:
+                normalized_steps += []
+################################################################################
+        # normalized_steps = normalize_solutions(steps)
+        # for r, s in zip(rows, normalized_steps):
+        #     r['steps'] = []
+        #     for step in s:
+        #         step = re.sub('[a-z]', 'x', step)
+        #         if normalize:
+        #             step = re.sub('[0-9]+', 'C', step)
+        #         r['steps'].append(step)
+################################################################################
 
     print(len(rows), 'data points.')
     print(len(set(r['student'] for r in rows)), 'students.')
