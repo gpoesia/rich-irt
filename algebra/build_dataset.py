@@ -107,14 +107,14 @@ def make_irt_dataset(data, output, drop_corrected=True, drop_freeform=True, norm
         #     else:
         #         normalized_steps += []
 ################################################################################
-        # normalized_steps = normalize_solutions(steps)
-        # for r, s in zip(rows, normalized_steps):
-        #     r['steps'] = []
-        #     for step in s:
-        #         step = re.sub('[a-z]', 'x', step)
-        #         if normalize:
-        #             step = re.sub('[0-9]+', 'C', step)
-        #         r['steps'].append(step)
+        normalized_steps = normalize_solutions(steps)
+        for r, s in zip(rows, normalized_steps):
+            r['steps'] = []
+            for step in s:
+                step = re.sub('[a-z]', 'x', step)
+                if normalize:
+                    step = re.sub('[0-9]+', 'C', step)
+                r['steps'].append(step)
 ################################################################################
 
     print(len(rows), 'data points.')
